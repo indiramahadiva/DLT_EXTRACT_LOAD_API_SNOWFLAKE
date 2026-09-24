@@ -1,9 +1,9 @@
-#========================================#
+# ========================================#
 #                                        #
-#    This script loads job ads with      #
-#    the keyword "data engineer"         #
+#    This script loads job ads for       #
+#    "Yrken med teknisk inriktning"      #
 #                                        #
-#========================================#
+# ========================================#
 
 
 import dlt
@@ -11,6 +11,7 @@ import requests
 import json
 from pathlib import Path
 import os
+
 
 def _get_ads(url_for_search, params):
     headers = {"accept": "application/json"}
@@ -29,14 +30,14 @@ def jobads_resource(params):
         yield ad
 
 
-def run_pipeline(query, table_name):
+def run_pipeline(table_name):
     pipeline = dlt.pipeline(
         pipeline_name="jobsearch",
         destination="snowflake",
         dataset_name="staging",
     )
 
-    params = {"q": query, "limit": 100}
+    params = {"limit": 100, "occupation-field": "6Hq3_tKo_V57"}
 
     load_info = pipeline.run(jobads_resource(params=params), table_name=table_name)
     print(load_info)
@@ -46,7 +47,4 @@ if __name__ == "__main__":
     working_directory = Path(__file__).parent
     os.chdir(working_directory)
 
-    query = "data engineer"
-    table_name = "data_field_job_ads"
-
-    run_pipeline(query, table_name)
+    run_pipeline(table_name="technical_field_job_ads")
